@@ -15,8 +15,23 @@
             <label for="shopping-list-entry">Add an item</label>
             <input type="text" name="shopping-list-entry" class="js-shopping-list-entry" placeholder="e.g., broccoli">
             <button type="submit">Add item</button>
-        </form>
-        <ul class="shopping-list js-shopping-list">
+            </form>
+
+            <button class="show-all-or-unchecked js-show-all-or-unchecked">
+                    <span class="display-button-label">Display Unchecked</span>
+                    </button>
+                    <div class="search-container">
+                    <form id="search-form">
+                            <input type="text" name="searchInput" id="searchInput" placeholder="Search for items..">
+                            <button type="submit">Search</button>
+                    </form>
+                    <button class="searchReset">
+                            <span class="reset-button-label">Reset</span>
+                        </button>
+                   </div>
+
+
+        <ul class="shopping-list js-shopping-list" id="shopping-list">
         </ul>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

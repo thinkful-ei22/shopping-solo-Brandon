@@ -49,3 +49,20 @@
   .shopping-item__checked {
     text-decoration: line-through;
   }
+
+  .show-all-or-unchecked {
+      position: relative;
+      bottom: 31px;
+      left: 350px;
+  }
+  .searchReset {
+      position: relative;
+      bottom: 31px;
+      left: 250px;
+
+  }
+  .search-container{
+      position: relative;
+      bottom: 15px;
+      left: 130px;
+  }
