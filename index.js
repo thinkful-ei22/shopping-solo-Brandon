@@ -22,19 +22,18 @@ let displayAll = true;
 
 let displaySearch = false;
 
-let input;
-let filter;
-
 //genterateItemElement function 
 function generateItemElement(item, itemIndex, template) {
   return `
    
   <li class="js-item-index-element" data-item-index="${itemIndex}">
       <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}
+      <form id="edit-item-form">
       <input type="text" name="item-edit-entry" class="item-edit-form" placeholder="edit...">
         <button class='item-edit-submit hidden'>
           <span class='button-label'>submit</span>
         </button>
+        </form>
         </span>
       <div class="shopping-item-controls">
       <button class="shopping-item-edit js-item-edit">
@@ -111,11 +110,16 @@ function renderShoppingList() {
   }
 }
 
+
+
+
 //addItemToShoppingList function
 function addItemToShoppingList(itemName) {
   //console.log(`Adding "${itemName}" to shopping list`);
   STORE.push({name: itemName, checked: false});
 }
+
+
 
 
 //handleNewItemSubmit function
@@ -206,8 +210,11 @@ function handleItemCheckClicked() {
 }
 
 function handleItemSearch(){
-  //console.log('`handleItemSearch` ran');
+  console.log('`handleItemSearch` ran');
+  let searchInput ='';
+  let filter = $(searchInput.value).toUpperCase;
   searchItems = STORE.filter(item => item.name.toUpperCase() === filter);
+
   renderShoppingList();
 }
 
@@ -230,33 +237,45 @@ function handleSearchReset(){
   });
 }
 
+
+
+
 function handleEditItemClicked() {
-//   $('.js-shopping-list').on('click', '.js-item-edit', event => {
-//     console.log('`handleEditItemClicked` ran');
-//     $(event.currentTarget).closest('li').find('.item-edit-box').show();
-//     $(event.currentTarget).closest('li').find('.item-edit-submit').show();
-//   });
+  $('.js-shopping-list').on('click', '.js-item-edit', event => {
+    //console.log('`handleEditItemClicked` ran');
+    $(event.currentTarget).closest('li').find('.item-edit-box').show();
+    $(event.currentTarget).closest('li').find('.item-edit-submit').show();
+  });
 }
 
 function handleEditItemSubmit(){
   
-//   $('.item-edit-submit').click(function () {  
-//     console.log('`handleEditItemSubmit` ran');
-//     console.log ($('.item-edit-form').val());
-//     let editedItemName = $('.item-edit-form').val();
-//     console.log (editedItemName);
+  $('.item-edit-submit ').on('click' ,function(event) {  
+    
+    console.log('`handleEditItemSubmit` ran');
+    event.preventDefault();
+    console.log ('the edit item name is ' + event.value);
 
-//     const itemIndex = getItemIndexFromElement(event.currentTarget);
-//     console.log (editedItemName);
-//     if(editedItemName !== ''){
-//       STORE[itemIndex].name = editedItemName;
-//     }click
-//     editedItemName='';
-//     console.log (editedItemName);
+    let editedItemName = $(this).parent().find('input.item-edit-form').val();
+    
+    console.log ('`editedItemName` = ' + editedItemName);
+    const itemIndex = getItemIndexFromElement(event.currentTarget);
+    console.log ('itemIndex = ' + itemIndex );
+    if(editedItemName !== ''){
+      STORE[itemIndex].name = editedItemName;
+      console.log (STORE[itemIndex].name);
+    }
+    editedItemName='';
 
-//     renderShoppingList();
-//   });
+    renderShoppingList();
+  });
 }
+
+
+
+
+
+
 function handleDeleteItemClicked() {
   // this function will be responsible for when users want to delete a shopping list
   // item
