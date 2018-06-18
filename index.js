@@ -28,12 +28,10 @@ function generateItemElement(item, itemIndex, template) {
    
   <li class="js-item-index-element" data-item-index="${itemIndex}">
       <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}
-      <form id="edit-item-form">
       <input type="text" name="item-edit-entry" class="item-edit-form" placeholder="edit...">
-        <button class='item-edit-submit hidden'>
+      <button class='item-edit-submit js-item-edit-submit hidden'>
           <span class='button-label'>submit</span>
         </button>
-        </form>
         </span>
       <div class="shopping-item-controls">
       <button class="shopping-item-edit js-item-edit">
@@ -60,6 +58,7 @@ function generateShoppingItemsString(shoppingList) {
 }
 
 //renderShoppingList function
+
 function renderShoppingList() {
   // render the shopping list in the DOM
   //console.log('`renderShoppingList` ran');
@@ -123,37 +122,35 @@ function addItemToShoppingList(itemName) {
 
 
 //handleNewItemSubmit function
-function handleNewItemSubmit() {
-  $('#js-shopping-list-form').submit(function(event) {
-    event.preventDefault();
-    //console.log('`handleNewItemSubmit` ran');
-    const newItemName = $('.js-shopping-list-entry').val();
-    $('.js-shopping-list-entry').val('');
-    addItemToShoppingList(newItemName);
-    renderShoppingList();
-  });
-}
+$('#js-shopping-list-form').submit(function(event) {
+  event.preventDefault();
+  //console.log('`handleNewItemSubmit` ran');
+  const newItemName = $('.js-shopping-list-entry').val();
+  $('.js-shopping-list-entry').val('');
+  addItemToShoppingList(newItemName);
+  renderShoppingList();
+});
+
 
 
 //handleDisplayButtonClicked function
-function handleDisplayButtonClicked() {
-  $('.js-show-all-or-unchecked').click(function () {
-    //console.log('`handleDisplayButtonClicked` ran' );
-    if (displayAll === true){
-      displayAll = false;
-      $('span', this).text('Display All');
+$('.js-show-all-or-unchecked').click(function () {
+  //console.log('`handleDisplayButtonClicked` ran' );
+  if (displayAll === true){
+    displayAll = false;
+    $('span', this).text('Display All');
 
-    }
-    else if (displayAll === false){
-      displayAll = true;
-      $('span', this).text('Display Unchecked');
+  }
+  else if (displayAll === false){
+    displayAll = true;
+    $('span', this).text('Display Unchecked');
 
-    }
-    //console.log('changed to '+ displayAll);
-    renderShoppingList();
+  }
+  //console.log('changed to '+ displayAll);
+  renderShoppingList();
 
-  });
-}
+});
+
 
 
 //toggleCheckedForListItem function
@@ -199,97 +196,90 @@ function getItemIndexFromElement(item) {
   return parseInt(itemIndexString, 10);
 }
 
-function handleItemCheckClicked() {
-  $('.container').on('click', '.js-item-toggle', event => {
-    //console.log('`handleItemCheckClicked` ran');
-    const itemIndex = getItemIndexFromElement(event.currentTarget);
-    toggleCheckedForListItem(itemIndex);
-    renderShoppingList();
+
+$('.container').on('click', '.js-item-toggle', event => {
+  //console.log('`handleItemCheckClicked` ran');
+  const itemIndex = getItemIndexFromElement(event.currentTarget);
+  toggleCheckedForListItem(itemIndex);
+  renderShoppingList();
  
-  });
-}
+});
 
 function handleItemSearch(){
   console.log('`handleItemSearch` ran');
-  let searchInput ='';
-  let filter = $(searchInput.value).toUpperCase;
+  let searchInput = $('#searchInput').val();
+  //console.log(searchInput);
+
+  let filter = searchInput.toUpperCase();
   searchItems = STORE.filter(item => item.name.toUpperCase() === filter);
 
   renderShoppingList();
 }
 
-function handleItemSearchClicked(){
-  $('#search-form').submit(function(event) {
-    event.preventDefault();
-    displaySearch = true;
-    console.log('`handleItemSearchClicked` ran');
-    handleItemSearch();
-  });
-}
+$('#search-form').submit(function(event) {
+  console.log('`handleItemSearchClicked` ran');
+  event.preventDefault();
+  displaySearch = true;
 
-function handleSearchReset(){
-  $('.searchReset').click(function() {
-    console.log('`handleSearchReset` ran');
+  handleItemSearch();
+});
 
-    searchItems = [];
-    displaySearch = false;
-    renderShoppingList();
-  });
-}
+
+$('.searchReset').click(function() {
+  console.log('`handleSearchReset` ran');
+
+  searchItems = [];
+  displaySearch = false;
+  renderShoppingList();
+});
 
 
 
 
-function handleEditItemClicked() {
-  $('.js-shopping-list').on('click', '.js-item-edit', event => {
-    //console.log('`handleEditItemClicked` ran');
-    $(event.currentTarget).closest('li').find('.item-edit-box').show();
-    $(event.currentTarget).closest('li').find('.item-edit-submit').show();
-  });
-}
 
-function handleEditItemSubmit(){
+$('.js-shopping-list').on('click', '.js-item-edit', event => {
+  //console.log('`handleEditItemClicked` ran');
+  $(event.currentTarget).closest('li').find('.item-edit-box').show();
+  $(event.currentTarget).closest('li').find('.item-edit-submit').show();
+
+
+});
+
+
   
-  $('.item-edit-submit ').on('click' ,function(event) {  
-    
-    console.log('`handleEditItemSubmit` ran');
-    event.preventDefault();
-    console.log ('the edit item name is ' + event.value);
+$('.js-shopping-list').on('click','.js-item-edit-submit', function(event) {   
 
-    let editedItemName = $(this).parent().find('input.item-edit-form').val();
-    
-    console.log ('`editedItemName` = ' + editedItemName);
-    const itemIndex = getItemIndexFromElement(event.currentTarget);
-    console.log ('itemIndex = ' + itemIndex );
-    if(editedItemName !== ''){
-      STORE[itemIndex].name = editedItemName;
-      console.log (STORE[itemIndex].name);
-    }
-    editedItemName='';
-
-    renderShoppingList();
-  });
-}
+  console.log('`handleEditItemSubmit` ran');
+  console.log ('the edit item name is ' + $(this).parent().find('input.item-edit-form').val());
+  let editedItemName = $(this).parent().find('input.item-edit-form').val();
+  console.log ('`editedItemName` = ' + editedItemName);
+  const itemIndex = getItemIndexFromElement(event.currentTarget);
+  console.log ('itemIndex = ' + itemIndex );
+  if(editedItemName !== ''){
+    STORE[itemIndex].name = editedItemName;
+    console.log (STORE[itemIndex].name);
+  }
+  renderShoppingList();
+});
 
 
 
 
 
 
-function handleDeleteItemClicked() {
-  // this function will be responsible for when users want to delete a shopping list
-  // item
-  $('.js-shopping-list').on('click', '.js-item-delete', event => {
-    //console.log('`handleDeleteItemClicked` ran');
-    const itemIndex = getItemIndexFromElement(event.currentTarget);
-    //   console.log (STORE[itemIndex]);
-    delete STORE[itemIndex];
-    //  console.log (STORE[itemIndex]);
-    renderShoppingList();
+// this function will be responsible for when users want to delete a shopping list
+// item
+$('.js-shopping-list').on('click', '.js-item-delete', event => {
+  //console.log('`handleDeleteItemClicked` ran');
+  const itemIndex = getItemIndexFromElement(event.currentTarget);
+  //   console.log (STORE[itemIndex]);
+  delete STORE[itemIndex];
+  //  console.log (STORE[itemIndex]);
+  renderShoppingList();
 
-  });
+});
   
-}
+
 
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
@@ -297,15 +287,7 @@ function handleDeleteItemClicked() {
 // for individual shopping list items.
 function handleShoppingList() {
   renderShoppingList();
-  handleNewItemSubmit();
-  handleItemCheckClicked();
-  handleItemSearch();
-  handleItemSearchClicked();
-  handleDisplayButtonClicked();
-  handleEditItemClicked();
-  handleEditItemSubmit();
-  handleSearchReset();
-  handleDeleteItemClicked();
+  
 }
 
 // when the page loads, call `handleShoppingList`
